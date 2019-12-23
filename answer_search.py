@@ -20,10 +20,10 @@ class AnswerSearcher:
                 ress = self.g.run(query).data()
                 answers += ress
                 # print(answers)
-            final_answer = self.answer_prettify(question_type, answers)
+            StockList, final_answer = self.answer_prettify(question_type, answers)
             if final_answer:
                 final_answers.append(final_answer)
-        return final_answers
+        return StockList, final_answers
 
     '''根据对应的qustion_type，调用相应的回复模板'''
 
@@ -36,37 +36,60 @@ class AnswerSearcher:
             desc = [i['n.name'] for i in answers]
             subject1 = answers[0]['m.stock_id']
             subject2 = answers[0]['m.name']
-            final_answer = '{0} {1}的所属概念是：{2}'.format(subject1, subject2, '；'.join(list(set(desc))[:self.num_limit]))
+            Stock_List = list(set(desc))[:self.num_limit]
+            final_answer = '{0} {1}的所属概念是：{2}'.format(subject1, subject2, '；'.join(Stock_List))
 
         elif question_type == 'stockname_conceptget':
             desc = [i['n.name'] for i in answers]
             subject1 = answers[0]['m.stock_id']
             subject2 = answers[0]['m.name']
-            final_answer = '{0} {1}的所属概念是：{2}'.format(subject1, subject2, '；'.join(list(set(desc))[:self.num_limit]))
+            Stock_List = list(set(desc))[:self.num_limit]
+            final_answer = '{0} {1}的所属概念是：{2}'.format(subject1, subject2, '；'.join(Stock_List))
 
         elif question_type == 'concept_stockget':
             desc = [i['m.stock_id'] + ' ' + i['m.name'] for i in answers]
             subject = answers[0]['n.name']
-            final_answer = '属于{0}概念的股票有：{1}'.format(subject, '；'.join(list(set(desc))[:self.num_limit]))
+            Stock_List = list(set(desc))[:self.num_limit]
+            final_answer = '属于{0}概念的股票有：{1}'.format(subject, '；'.join(Stock_List))
 
         elif question_type == 'stockid_industryget':
             desc = [i['n.name'] for i in answers]
             subject1 = answers[0]['m.stock_id']
             subject2 = answers[0]['m.name']
-            final_answer = '{0} {1}的所属行业是：{2}'.format(subject1, subject2, '；'.join(list(set(desc))[:self.num_limit]))
+            Stock_List = list(set(desc))[:self.num_limit]
+            final_answer = '{0} {1}的所属行业是：{2}'.format(subject1, subject2, '；'.join(Stock_List))
 
         elif question_type == 'stockname_industryget':
             desc = [i['n.name'] for i in answers]
             subject1 = answers[0]['m.stock_id']
             subject2 = answers[0]['m.name']
-            final_answer = '{0} {1}的所属行业是：{2}'.format(subject1, subject2, '；'.join(list(set(desc))[:self.num_limit]))
+            Stock_List = list(set(desc))[:self.num_limit]
+            final_answer = '{0} {1}的所属行业是：{2}'.format(subject1, subject2, '；'.join(Stock_List))
 
         elif question_type == 'industry_stockget':
             desc = [i['m.stock_id'] + ' ' + i['m.name'] for i in answers]
             subject = answers[0]['n.name']
-            final_answer = '属于{0}行业的股票有：{1}'.format(subject, '；'.join(list(set(desc))[:self.num_limit]))
+            Stock_List = list(set(desc))[:self.num_limit]
+            final_answer = '属于{0}行业的股票有：{1}'.format(subject, '；'.join(Stock_List))
 
-        return final_answer
+        elif question_type == 'stockname_yearget':
+            desc = [i['n.name'] for i in answers]
+            subject = answers[0]['m.name']
+            Stock_List = list(set(desc))[:self.num_limit]
+            final_answer = '{0} 股票的上市年份为：{1}'.format(subject, '；'.join(Stock_List))
+
+        elif question_type == 'stockid_yearget':
+            desc = [i['n.name'] for i in answers]
+            subject = answers[0]['m.name']
+            Stock_List = list(set(desc))[:self.num_limit]
+            final_answer = '{0} 股票的上市年份为：{1}'.format(subject, '；'.join(Stock_List))
+
+        elif question_type == 'stockname_areaget':
+            desc = [i['n.name'] for i in answers]
+            subject = answers[0]['m.name']
+            Stock_List = list(set(desc))[:self.num_limit]
+            final_answer = '{0} 股票的所属地为：{1}'.format(subject, '；'.join(Stock_List))
+        return Stock_List, final_answer
 
 
 if __name__ == '__main__':

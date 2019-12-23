@@ -9,7 +9,7 @@ class QuestionPaser:
                     entity_dict[type] = [arg]
                 else:
                     entity_dict[type].append(arg)
-
+         # print(entity_dict)
         return entity_dict
 
     '''解析主函数'''
@@ -40,6 +40,15 @@ class QuestionPaser:
 
             elif question_type == 'industry_stockget':
                 sql = self.sql_transfer(question_type, entity_dict.get('industry'))
+
+            elif question_type == 'stockname_yearget':
+                sql = self.sql_transfer(question_type, entity_dict.get('stockname'))
+
+            elif question_type == 'stockid_yearget':
+                sql = self.sql_transfer(question_type, entity_dict.get('stockid'))
+
+            elif question_type == 'stockname_areaget':
+                sql = self.sql_transfer(question_type, entity_dict.get('stockname'))
 
             if sql:
                 sql_['sql'] = sql
@@ -94,8 +103,29 @@ class QuestionPaser:
                 "MATCH (m)-[r:industry_of]->(n:Industry) where n.name = '{}' return m.stock_id, m.name, n.name".format(
                     i) for i in entities]
 
+        # 按股票名称查询上市时间
+        elif question_type == 'stockname_yearget':
+
+            sql = [
+
+                "MATCH (m)-[r:year_founded_of]->(n:Year) where m.name = '{}' return m.stock_id, m.name, n.name".format(
+                    i) for i in entities]
+
+        # 按股票id查询上市时间
+
+        elif question_type == 'stockid_yearget':
+            sql = [
+                "MATCH (m)-[r:year_founded_of]->(n:Year) where m.stock_id = '{}' return m.stock_id, m.name, n.name".format(
+                    i) for i in entities]
+        # 按股票名称查询股票归属地
+        elif question_type == 'stockname_areaget':
+            sql = [
+                "MATCH (m)-[r:area_of]->(n:Area) where m.name = '{}' return m.stock_id, m.name, n.name".format(
+                    i) for i in entities]
         return sql
 
 
 if __name__ == '__main__':
     handler = QuestionPaser()
+    test = {'args': {'平安银行': ['stockname']}, 'question_types': ['stockname_yearget']}
+    print(handler.parser_main(test))

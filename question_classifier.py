@@ -15,6 +15,9 @@ class QuestionClassifier:
         self.gender_path = os.path.join(cur_dir, 'stock_dict/gender.txt')
         self.title_path = os.path.join(cur_dir, 'stock_dict/title.txt')
         self.topmanager_path = os.path.join(cur_dir, 'stock_dict/topmanager.txt')
+        self.year_path = os.path.join(cur_dir, 'stock_dict/year.txt')
+        self.area_path = os.path.join(cur_dir, 'stock_dict/area.txt')
+        self.recommend_path = os.path.join(cur_dir, 'stock_dict/recommend.txt')
 
         # 股票
         # 加载特征词
@@ -26,15 +29,18 @@ class QuestionClassifier:
         self.gender_wds = [i.strip() for i in open(self.gender_path, encoding='utf-8') if i.strip()]
         self.title_wds = [i.strip() for i in open(self.title_path, encoding='utf-8') if i.strip()]
         self.topmanager_wds = [i.strip() for i in open(self.topmanager_path, encoding='utf-8') if i.strip()]
+        self.year_wds = [i.strip() for i in open(self.year_path, encoding='utf-8') if i.strip()]
+        self.area_wds = [i.strip() for i in open(self.area_path, encoding='utf-8') if i.strip()]
+        self.recommend_wds = [i.strip() for i in open(self.recommend_path, encoding='utf-8') if i.strip()]
         self.stock_region_words = set(self.stockid_wds + self.stockname_wds +
-                                      self.concept_wds + self.industry_wds + self.sensitive_wds + self.gender_wds + self.title_wds + self.topmanager_wds)
+                                      self.concept_wds + self.industry_wds + self.sensitive_wds + self.gender_wds + self.title_wds + self.topmanager_wds + self.year_wds + self.area_wds +self.recommend_wds)
         # 构造领域actree
         self.stock_region_tree = self.build_actree(list(self.stock_region_words))
         # 构建词典
         self.stock_wdtype_dict = self.build_wdtype_stock_dict()
         # 问句疑问词
         # 【0】概念
-        self.concept_qwds = ['所属概念', '什么概念', '概念类别', '概念是什么', '啥概念', '概念是啥', '嘛概念', '神马概念', '概念']
+        self.concept_qwds = ['所属概念', '什么概念', '概念类别', '概念是什么', '啥概念', '概念是啥', '嘛概念', '神马概念', '概念', '是什么']
         # 【3】行业
         self.industry_qwds = ['所属行业', '什么行业', '行业是什么', '行业是啥', '啥行业', '嘛行业', '神马行业', '行业类别', '行业']
         # 【11】性别
@@ -43,6 +49,10 @@ class QuestionClassifier:
         self.title_qwds = ['职位', '职务']
         # 【16】高管
         self.topmanager_qwds = ['高管']
+        # 【17】年份
+        self.year_qwds = ['时间', '年份', '日期', '上市时间', '上市时间']
+        # 【18】地区
+        self.area_qwds = ['地区', '地方', '哪里', '在哪里', '属于哪个城市', '城市', '所属地', '归属地', '在哪个省份']
 
         self.stock_belong_qwds = ['属于', '所属', '拥有', '包含', '含有', '有哪些']
 
@@ -109,6 +119,22 @@ class QuestionClassifier:
         if question_types == [] and 'sensitive' in types:
             question_types = ['sensitive']
 
+        if self.check_words(self.year_qwds, question) and 'stockname' in types:
+            question_type = 'stockname_yearget'
+            question_types.append(question_type)
+
+        if self.check_words(self.year_qwds, question) and 'stockid' in types:
+            question_type = 'stockid_yearget'
+            question_types.append(question_type)
+
+        if self.check_words(self.area_qwds, question) and 'stockname' in types:
+            question_type = 'stockname_areaget'
+            question_types.append(question_type)
+
+        if 'recommend' in types:
+            question_type = 'recommend_get'
+            question_types.append(question_type)
+
         # 将多个分类结果进行合并处理，组装成一个字典
         data['question_types'] = question_types
 
@@ -136,6 +162,12 @@ class QuestionClassifier:
                 wd_dict[wd].append('topmanager')
             if wd in self.title_wds:
                 wd_dict[wd].append('title')
+            if wd in self.year_wds:
+                wd_dict[wd].append('year')
+            if wd in self.area_wds:
+                wd_dict[wd].append('area')
+            if wd in self.recommend_wds:
+                wd_dict[wd].append('recommend')
 
         return wd_dict
 
