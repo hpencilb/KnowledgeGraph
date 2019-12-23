@@ -1,0 +1,5 @@
+cs放installation下面的import里，导入之前不要start,看一下\installation-3.5.14\data\databases的graph.db是不是空的
+
+cd import
+installation前面路径自己改
+neo4j-import --into graph.db --nodes stock.csv --nodes concept.csv --nodes industry.csv --nodes area.csv --nodes year.csv --nodes executive.csv --relationships stock_concept.csv --relationships stock_industry.csv --relationships stock_area.csv --relationships stock_year_founded.csv --relationships stock_year_listed.csv --relationships executive_stock.csv --skip-duplicate-nodes=true --skip-bad-relationships=true --stacktrace --bad-tolerance=500000
